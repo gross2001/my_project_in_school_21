@@ -1,0 +1,36 @@
+Можно выбрать на чем основан stack:
+
+// stack with default underlying deque
+std::stack< int > intDequeStack;   
+
+// stack with underlying vector
+std::stack< int, std::vector< int > > intVectorStack;
+
+// stack with underlying list
+std::stack< int, std::list< int > > intListStack;
+https://stackoverflow.com/questions/63043291/stdstack-implementation-on-different-containers-what-is-the-actual-difference
+
+
+
+typedef is defining a new type for use in your code.
+typedef typename _MyBase::value_type value_type;
+typename here is letting the compiler know that value_type is a type and not a static member of _MyBase.
+
+
+
+#if 1
+Only the first block will be processed --- until someone changes the 1 to a 0. 
+Then the other block will be compiled. 
+This is a convenient way to temporary switch blocks of code in and out while testing different algorithms.
+
+
+https://stackoverflow.com/questions/10104415/assignment-operator-within-function-parameter-c
+ListNode( const Object& theElement = Object(), ListNode * node = NULL);
+Those are not assignment operators. Those are default arguments for the function.
+A function can have one or more default arguments, meaning that if, at the calling point, no argument is provided, the default is used.
+
+Нужно ли перебрасывать эксепшены
+https://stackoverflow.com/questions/27152201/why-rethrow-an-exception
+
+Нужно ли перебрасывать бед-аллок
+https://stackoverflow.com/questions/9456728/how-to-deal-with-bad-alloc-in-c
