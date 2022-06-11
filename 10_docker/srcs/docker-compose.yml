@@ -1,0 +1,76 @@
+version: '3'
+services:
+  nginx:
+    depends_on:
+      - wordpress
+    container_name: nginx
+    build:
+      context: .
+      args:
+        - CERTS_=${CERTS_}
+      dockerfile: ./requirements/nginx/Dockerfile
+    image: nginx
+    restart: unless-stopped
+    volumes:
+      - wordpress:/var/www/html
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}      
+    networks:
+      docker-network:
+        ipv4_address: 192.168.240.2
+
+  wordpress:
+    depends_on:
+      - mariadb
+    container_name: wordpress
+    build: ./requirements/wordpress
+    image: wordpress
+    restart: unless-stopped
+    volumes:
+    - wordpress:/var/www/html
+    env_file: ./.env
+    environment:
+      - WORDPRESS_DB_HOST=mariadb
+      - WORDPRESS_DB_USER=${MYSQL_USER}
+      - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
+      - WORDPRESS_DB_NAME=wordpress
+    networks:
+      docker-network:
+        ipv4_address: 192.168.240.3
+
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    restart: unless-stopped
+    image: mariadb
+    env_file: ./.env
+    environment:
+      - MYSQL_DATABASE=wordpress
+    volumes:
+      - wordpress_db:/var/lib/mysql
+    networks:
+      docker-network:
+        ipv4_address: 192.168.240.4
+
+volumes:
+  wordpress_db:
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/home/njacques/data/wordpress_db'
+  wordpress:
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/home/njacques/data/wordpress'
+
+
+networks:
+  docker-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.240.0/24
